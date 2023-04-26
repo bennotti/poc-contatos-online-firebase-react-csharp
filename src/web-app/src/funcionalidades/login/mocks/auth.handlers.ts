@@ -5,27 +5,25 @@ import { ReturnApiDataHelper } from '@infra/mock/helper/return-api-data.helper';
 import { AnyObject } from '@infra/types';
 import * as jose from 'jose';
 
-
+import plainText from '@virtual:plain-text/certs/pkcs8';
+console.log(plainText);
 const algorithm = 'ES256'
-const pkcs8 = `-----BEGIN PRIVATE KEY-----
-MIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQgiyvo0X+VQ0yIrOaN
-nlrnUclopnvuuMfoc8HHly3505OhRANCAAQWUcdZ8uTSAsFuwtNy4KtsKqgeqYxg
-l6kwL5D4N3pEGYGIDjV69Sw0zAt43480WqJv7HCL0mQnyqFmSrxj8jMa
------END PRIVATE KEY-----`;
-export const privateKey = await jose.importPKCS8(pkcs8, algorithm);
+
+export const privateKey = await jose.importPKCS8(plainText, algorithm);
 
 export const mockLoginEndpointAuthHandler = [
   rest.post(
-    `${env.API_URI}api/auth`,
+    `${env.API_URL}api/auth`,
     async (req, res, ctx) => {
+      console.log(req.headers);
       const payload = await req.json<AnyObject>();
       console.log('payload', payload);
 
       const token = await new jose.SignJWT({ nome: payload.nome })
         .setProtectedHeader({ alg: 'ES256' })
         .setIssuedAt()
-        .setIssuer('urn:example:issuer')
-        .setAudience('urn:example:audience')
+        .setIssuer(env.API_URL as string)
+        .setAudience('PocFirebaseReactApi')
         .setExpirationTime('2h')
         .sign(privateKey);
 

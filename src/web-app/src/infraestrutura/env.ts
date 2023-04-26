@@ -24,5 +24,15 @@ export const env = {
   IS_DESKTOP: isDesktop,
   IS_DEVELOPMENT: isDevelopment,
   TITLE: defineEnv('VITE_APP_TITLE', true),
-  API_URI: defineEnv('VITE_API_URL', true)
+  API_URL: defineEnv('VITE_API_URL', true),
+  FIREBASE: {
+    API_KEY: defineEnv('VITE_FIREBASE_APIKEY', true),
+    AUTH_DOMAIN: defineEnv('VITE_FIREBASE_AUTHDOMAIN', true),
+    DATABASE_URL: defineEnv('VITE_FIREBASE_DATABASEURL', true),
+    PROJECT_ID: defineEnv('VITE_FIREBASE_PROJECTID', true),
+    STORAGE_BUCKET: defineEnv('VITE_FIREBASE_STORAGEBUCKET', true),
+    MESSAGING_SENDER_ID: defineEnv('VITE_FIREBASE_MESSAGINGSENDERID', true),
+    APP_ID: defineEnv('VITE_FIREBASE_APPID', true),
+    MEASUREMENT_ID: defineEnv('VITE_FIREBASE_MEASUREMENTID', true),
+  }
 };

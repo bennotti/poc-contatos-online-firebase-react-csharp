@@ -1,5 +1,6 @@
 import { RequestHandler } from 'msw';
+import { mockLoginEndpointAuthHandler } from './login/mocks/auth.handlers';
 
-// import { inicioServicosHandler } from './inicio/mock/endpoints/inicio-servicos.handler';
-
-export const mswHandlers: RequestHandler[] = [];
+export const mswHandlers: RequestHandler[] = [
+    ...mockLoginEndpointAuthHandler
+];

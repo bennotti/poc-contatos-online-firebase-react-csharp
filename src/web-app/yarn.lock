@@ -10546,6 +10546,11 @@ vite-plugin-package-version@^1.0.2:
   resolved "https://registry.yarnpkg.com/vite-plugin-package-version/-/vite-plugin-package-version-1.0.2.tgz#72b9919f6022eac093fd04533dc0e26dffe22771"
   integrity sha512-xCJMR0KD4rqSUwINyHJlLizio2VzYzaMrRkqC9xWaVGXgw1lIrzdD+wBUf1XDM8EhL1JoQ7aykLOfKrlZd1SoQ==
 
+vite-plugin-virtual-plain-text@^1.4.2:
+  version "1.4.2"
+  resolved "https://registry.yarnpkg.com/vite-plugin-virtual-plain-text/-/vite-plugin-virtual-plain-text-1.4.2.tgz#90179f8f9a0bea2caab1eada5efa6c9d5f285c27"
+  integrity sha512-sZKYNxB9Qdlh8nNyGchN50TPMBhZoqQjQ8z15VJcNW/Qs3EYfxEjCYCjFOltFJ8IWszLH71/Tu4hzTHrBwt8Nw==
+
 vite-tsconfig-paths@^4.0.7:
   version "4.2.0"
   resolved "https://registry.yarnpkg.com/vite-tsconfig-paths/-/vite-tsconfig-paths-4.2.0.tgz#bd2647d3eadafb65a10fc98a2ca565211f2eaf63"

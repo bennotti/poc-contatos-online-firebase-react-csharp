@@ -21,20 +21,12 @@ export const AuthenticatedScreenLayout: FC<AuthenticatedScreenLayoutProps> = ({
 }) => {
   return (
     <Layout
-      style={{ minHeight: '100vh', maxWidth: '100vw', overflowY: 'hidden' }}
-      hasSider
+      style={{ maxWidth: '100vw', overflow: 'hidden' }}
     >
-      <Layout className="site-l1ayout">
-        <Content style={{ padding: '1em', background: '#fff', height: '100%', overflow: 'initial', overflowY: 'hidden' }}>
-          <Affix offsetTop={0}>
-            <Title level={2} style={{ marginTop: '0' }}>{title}</Title>
-          </Affix>
+      <Layout className="site-l1ayout" style={{ overflow: 'hidden' }}>
+        <Content style={{ overflow: 'hidden' }}>
           {children}
         </Content>
-        <FloatButton.BackTop />
-        <Affix offsetBottom={0}>
-          <Footer style={{ background: '#fff', textAlign: 'center' }}>Poc Firebase React</Footer>
-        </Affix>
       </Layout>
     </Layout>
   );

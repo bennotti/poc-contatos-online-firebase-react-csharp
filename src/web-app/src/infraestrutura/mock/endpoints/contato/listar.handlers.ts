@@ -4,7 +4,7 @@ import { ReturnApiDataTableHelper } from '@infra/mock/helper/return-api-data-tab
 
 export const mockContatoEndpointListaHandler = [
   rest.get(
-    `${env.API_URI}api/contato`,
+    `${env.API_URL}api/contato`,
     (_, res, ctx) => {
       return res(
         ctx.delay(1000),

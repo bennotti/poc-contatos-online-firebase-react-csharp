@@ -4,12 +4,14 @@ import react from '@vitejs/plugin-react';
 import VitePluginHtmlEnv from 'vite-plugin-html-env';
 import loadVersion from 'vite-plugin-package-version';
 import EnvironmentPlugin from "vite-plugin-environment";
+import plainText from 'vite-plugin-virtual-plain-text';
 import dns from 'dns';
 
 dns.setDefaultResultOrder('verbatim');
 const path = require('path');
 
 export const plugins = [
+  plainText(),
   react(),
   VitePluginHtmlEnv(),
   loadVersion(),

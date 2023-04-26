@@ -42,7 +42,7 @@ export class AbstractApiService implements IApiService {
   httpClientApi: AxiosInstance;
   constructor() {
     this.httpClientApi = axios.create({
-      baseURL: env.API_URI,
+      baseURL: env.API_URL,
       headers: {
         'Content-Type': 'application/json',
       },
