@@ -5,29 +5,29 @@ import { ReturnApiDataHelper } from '@infra/mock/helper/return-api-data.helper';
 import { AnyObject } from '@infra/types';
 import * as jose from 'jose';
 
-import plainText from '@virtual:plain-text/certs/pkcs8';
-console.log(plainText);
-const algorithm = 'ES256'
-
-export const privateKey = await jose.importPKCS8(plainText, algorithm);
+const secret = new TextEncoder().encode(
+  env.MSW.JWT_SECRET,
+);
 
 export const mockLoginEndpointAuthHandler = [
   rest.post(
     `${env.API_URL}api/auth`,
     async (req, res, ctx) => {
-      console.log(req.headers);
+      // console.log(req.headers);
       const payload = await req.json<AnyObject>();
-      console.log('payload', payload);
+      // console.log('payload', payload);
 
+        //setNotBefore
+        //setSubject
       const token = await new jose.SignJWT({ nome: payload.nome })
-        .setProtectedHeader({ alg: 'ES256' })
+        .setProtectedHeader({ alg: 'HS256' })
         .setIssuedAt()
         .setIssuer(env.API_URL as string)
         .setAudience('PocFirebaseReactApi')
         .setExpirationTime('2h')
-        .sign(privateKey);
+        .sign(secret);
 
-      console.log('jwt_token', token);
+      // console.log('jwt_token', token);
 
       return res(
         ctx.delay(1000),

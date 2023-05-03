@@ -11,7 +11,7 @@ dns.setDefaultResultOrder('verbatim');
 const path = require('path');
 
 export const plugins = [
-  plainText(),
+  plainText({ virtualNamespace: '@texto-puro/' }),
   react(),
   VitePluginHtmlEnv(),
   loadVersion(),

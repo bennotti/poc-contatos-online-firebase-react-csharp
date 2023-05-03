@@ -34,5 +34,8 @@ export const env = {
     MESSAGING_SENDER_ID: defineEnv('VITE_FIREBASE_MESSAGINGSENDERID', true),
     APP_ID: defineEnv('VITE_FIREBASE_APPID', true),
     MEASUREMENT_ID: defineEnv('VITE_FIREBASE_MEASUREMENTID', true),
+  },
+  MSW: {
+    JWT_SECRET: defineEnv('VITE_MSW_JWT_SECRET', true) ?? '',
   }
 };

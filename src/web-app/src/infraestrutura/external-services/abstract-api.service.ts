@@ -1,20 +1,26 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosRequestHeaders, InternalAxiosRequestConfig } from "axios";
 import { env } from "@infra/env";
 import { IApiService } from "./interface/api.interface";
-import historico from "@infra/historico";
 
 
 
-export async function tentarReautenticar(error: any) {
-  error.config.retries = error.config.retries || 0;
-  if (error && error.response && error.response.status === 401) {
-    if (error.config.retries++ < 2)
-      return axios.request(error.config);
-    else return historico.push('/login');
-    // return signinSilent().finally(() => Promise.reject(error));
-  }
+export function tentarReautenticar(httpClientApi: AxiosInstance) {
+  return async (error: any) => {
+    error.config.retries = error.config.retries || 0;
 
-  throw error;
+    if (error.response && error.response.status === 401) {
+      if (error.config.retries++ < 2){
+        // console.log('error', error.config.retries);
+        return httpClientApi.request(error.config);
+      } else {
+        // console.log('error', error.config.retries);
+        localStorage.removeItem('access_token');
+        window.location.href = '/login';
+        return null;
+      }
+    }
+    throw error;
+  };
 }
 
 export async function authorizationHeaderInterceptor(
@@ -22,7 +28,7 @@ export async function authorizationHeaderInterceptor(
 ) {
   var accessToken = localStorage.getItem('access_token');
   // pegar do localstorage
-  
+  // console.log('accessToken middleware', accessToken);
   if (!config || (config && !config.headers) || !accessToken) {
     return config;
   }
@@ -48,12 +54,13 @@ export class AbstractApiService implements IApiService {
       },
     });
 
+    const responseInterceptor = tentarReautenticar(this.httpClientApi);
 
     this.httpClientApi.interceptors?.request.use(authorizationHeaderInterceptor);
     this.httpClientApi.interceptors?.response.use(
       response => response,
       error => {
-        return tentarReautenticar(error);
+        return responseInterceptor(error);
       }
     );
   }
