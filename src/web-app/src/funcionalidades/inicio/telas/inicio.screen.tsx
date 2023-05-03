@@ -51,13 +51,13 @@ export const InicioScreen: FC = () => {
   const [contatos, setContatos] = useState<Array<AnyObject>>([]);
 
   useEffect(() => {
-    const query = ref(db, "projects");
+    const query = ref(db, `contatos`);
     return onValue(query, (snapshot) => {
       const data = snapshot.val();
 
       if (snapshot.exists()) {
         Object.values(data).map((project) => {
-          // setContatos((projects) => [...projects, project]);
+          setContatos((projects) => [...projects, project as AnyObject]);
         });
       }
     });
