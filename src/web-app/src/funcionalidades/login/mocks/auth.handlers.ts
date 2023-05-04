@@ -13,54 +13,6 @@ const secret = new TextEncoder().encode(
   env.MSW.JWT_SECRET,
 );
 
-const obterListaContatos = () => {
-  const dbRef = ref(db);
-  const query = ref(db, `contatos`);
-
-
-  // set(query, {});
-
-  /*
-  https://medium.com/innovance-company-blog/how-to-connect-firebase-realtime-database-to-a-react-app-f7dcb983150a
-  get(child(dbRef, `contatos/${userId}`)).then((snapshot) => {
-  if (snapshot.exists()) {
-    console.log(snapshot.val());
-  } else {
-    console.log("No data available");
-  }
-}).catch((error) => {
-  console.error(error);
-});
-
-
-set(ref(db, 'users/' + userId), {
-  username: name,
-  email: email,
-  profile_picture : imageUrl
-})
-.then(() => {
-  // Data saved successfully!
-})
-.catch((error) => {
-  // The write failed...
-});
-  
-  */
-
-  console.log(query);
-  return onValue(query, (snapshot) => {
-    const data = snapshot.val();
-    console.log(data);
-    if (snapshot.exists()) {
-      // Object.values(data).map((project) => {
-      //   setContatos((projects) => [...projects, project as AnyObject]);
-      // });
-    } else {
-      console.log("No data available");
-    }
-  });
-};
-
 export const mockLoginEndpointAuthHandler = [
   rest.post(
     `${env.API_URL}api/auth`,
