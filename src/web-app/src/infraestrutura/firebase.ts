@@ -1,4 +1,5 @@
 import { initializeApp } from "firebase/app";
+import "firebase/database";
 import { getDatabase } from "firebase/database";
 import { env } from "./env";
 
