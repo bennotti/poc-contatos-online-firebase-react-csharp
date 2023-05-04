@@ -9,43 +9,18 @@ const secret = new TextEncoder().encode(
   env.MSW.JWT_SECRET,
 );
 
-export const mockLoginEndpointUserInfoHandler = [
-  rest.get(
+export const mockLoginEndpointValidaServidorHandler = [
+  rest.post(
     `${env.API_URL}api/valida/servidor`,
     async (req, res, ctx) => {
-      let authorization: string = req.headers.get('authorization') ?? '';
-
-      authorization = authorization.replace('Bearer ', '');
-
-      let payload: AnyObject | null;
-
-      try{
-        const responseVerify = await jose.jwtVerify(
-          authorization,
-          secret,
-          {
-            issuer: env.API_URL as string,
-            audience: 'PocFirebaseReactApi',
-          });
-        
-        payload = responseVerify.payload;
-      } catch (e) {
-        console.log(e);
-        return res(
-          ctx.delay(1000),
-          ctx.status(401),
-          ctx.json(
-            ReturnApiDataHelper.response({})
-          )
-        );
-      }
+      
 
       return res(
         ctx.delay(1000),
         ctx.status(200),
         ctx.json(
           ReturnApiDataHelper.response({
-            ...payload,
+            
           })
         )
       );

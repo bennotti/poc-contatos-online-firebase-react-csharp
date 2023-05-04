@@ -6,6 +6,7 @@ import { AnyObject } from '@infra/types';
 import { LoginApiService } from '@infra/external-services/login-api.service';
 import { InfoCircleOutlined } from '@ant-design/icons';
 import { ServidorSituacaoComponente } from '../componentes/servidor/servidor-situacao.componente';
+import { UsuarioNomeComponente } from '../componentes/servidor/usuario-nome.componente';
 
 const { Title } = Typography;
 
@@ -48,45 +49,7 @@ export const LoginScreen: FC = () => {
           }}
         >
           <ServidorSituacaoComponente />
-          <Row gutter={8} justify='center' align='top'>
-            <Col xs={24} sm={24} md={24} lg={12}>
-              <Form.Item
-                name="username"
-                label="Username"
-                required 
-                tooltip={{
-                  title: 'Informe username do usuário',
-                  icon: <InfoCircleOutlined />
-                }}
-                hasFeedback
-                validateStatus="warning"
-              >
-                <Input
-                  placeholder="Username"
-                  disabled={loading}
-                  onBlur={(e: React.FocusEvent<HTMLInputElement>) => {
-                    const { value } = e.target;
-                    console.log('Slugname username', value);
-                  }}
-                />
-              </Form.Item>
-            </Col>
-            <Col xs={24} sm={24} md={24} lg={12}>
-              <Form.Item
-                name="nome"
-                label="Nome"
-                required 
-                tooltip={{
-                  title: 'Informe o nome para o usuário',
-                  icon: <InfoCircleOutlined />
-                }}
-                hasFeedback
-                validateStatus="warning"
-              >
-                <Input placeholder="Nome" disabled={loading}/>
-              </Form.Item>
-            </Col>
-          </Row>
+          <UsuarioNomeComponente  />
           <Row gutter={8} justify='center' align='top'>
             <Col xs={24} sm={24} md={24} lg={24}>
               <Form.Item>

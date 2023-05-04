@@ -4,13 +4,13 @@ import { InfoCircleOutlined } from '@ant-design/icons';
 import { LoginApiService } from '@infra/external-services/login-api.service';
 import { ValidateStatus } from '@infra/types';
 
-export interface ServidorSituacaoComponenteProps {
+export interface UsuarioNomeComponenteProps {
     loading?: boolean
 };
 
 const _loginApiService = new LoginApiService;
 
-export const ServidorSituacaoComponente: FC<ServidorSituacaoComponenteProps> = ({
+export const UsuarioNomeComponente: FC<UsuarioNomeComponenteProps> = ({
     loading = false
 }) => {
     const [statusValidacao, setStatusValidacao] = useState<ValidateStatus>('');
@@ -22,45 +22,49 @@ export const ServidorSituacaoComponente: FC<ServidorSituacaoComponenteProps> = (
             setStatusValidacao('');
             return;
         }
-
         setStatusValidacao('validating');
-        const servidorResponse = await _loginApiService.validarServidor(value);
+        const servidorResponse = await _loginApiService.validarUsername(value);
 
-        console.log('Slugname servidor', value);
+        console.log('Slugname username', value);
         setStatusValidacao('success');
     };
 
     return (
         <Row gutter={8} justify='center' align='top'>
-            <Col xs={24} sm={12} md={12} lg={12}>
+            <Col xs={24} sm={24} md={24} lg={12}>
                 <Form.Item
-                    name="servidor"
-                    label="Servidor"
+                    name="username"
+                    label="Username"
                     required 
                     tooltip={{
-                        title: 'Informe o nome do servidor',
+                        title: 'Informe username do usuário',
                         icon: <InfoCircleOutlined />
                     }}
                     hasFeedback
                     validateStatus={statusValidacao}
                 >
                     <Input
-                        placeholder="Servidor"
+                        placeholder="Username"
                         disabled={loading}
                         onBlur={onBlurEvent}
                     />
                 </Form.Item>
             </Col>
-            <Col xs={24} sm={12} md={12} lg={12}>
+            <Col xs={24} sm={24} md={24} lg={12}>
                 <Form.Item
-                    label="Situação"
+                    name="nome"
+                    label="Nome"
                     required 
+                    tooltip={{
+                        title: 'Informe o nome para o usuário',
+                        icon: <InfoCircleOutlined />
+                    }}
                     hasFeedback
                     validateStatus={statusValidacao}
                 >
                     <Input
                         readOnly
-                        placeholder="Situação"
+                        placeholder="Nome"
                         disabled={!statusValidacao || loading}
                     />
                 </Form.Item>
