@@ -5,13 +5,12 @@ import { FullScreenLayout } from '@layouts/full-screen.layout';
 import { AnyObject } from '@infra/types';
 import { LoginApiService } from '@infra/external-services/login-api.service';
 import { InfoCircleOutlined } from '@ant-design/icons';
-import { ServidorSituacaoComponente } from '../componentes/servidor/servidor-situacao.componente';
 
 const { Title } = Typography;
 
 const _loginApiService = new LoginApiService;
 
-export const LoginScreen: FC = () => {
+export const OtpScreen: FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [form] = Form.useForm();
   const navigate = useNavigate();
@@ -47,8 +46,57 @@ export const LoginScreen: FC = () => {
             // setBotaoSalvarDesabilitado(dados.validarAlteracoes(values));
           }}
         >
-          <ServidorSituacaoComponente />
           <Row gutter={8} justify='center' align='top'>
+            <Col xs={24} sm={12} md={12} lg={12}>
+              <Form.Item
+                name="servidor"
+                label="Servidor"
+                required 
+                tooltip={{
+                  title: 'Informe o nome do servidor',
+                  icon: <InfoCircleOutlined />
+                }}
+                hasFeedback
+                validateStatus="warning"
+              >
+                <Input
+                  status="warning"
+                  placeholder="Servidor"
+                  disabled={loading}
+                  onBlur={(e) => {
+                    const { value } = e.target;
+                    console.log('Slugname servidor', value);
+                  }}
+                />
+              </Form.Item>
+            </Col>
+            <Col xs={24} sm={12} md={12} lg={12}>
+              <Form.Item
+                label="Situação"
+                required 
+                hasFeedback
+                validateStatus="warning"
+              >
+                <Input readOnly placeholder="Situação" disabled={loading}/>
+              </Form.Item>
+            </Col>
+          </Row>
+          <Row gutter={8} justify='center' align='top'>
+            <Col xs={24} sm={24} md={24} lg={12}>
+              <Form.Item
+                name="nome"
+                label="Nome"
+                required 
+                tooltip={{
+                  title: 'Informe o nome para o usuário',
+                  icon: <InfoCircleOutlined />
+                }}
+                hasFeedback
+                validateStatus="warning"
+              >
+                <Input placeholder="Nome" disabled={loading}/>
+              </Form.Item>
+            </Col>
             <Col xs={24} sm={24} md={24} lg={12}>
               <Form.Item
                 name="username"
@@ -64,26 +112,11 @@ export const LoginScreen: FC = () => {
                 <Input
                   placeholder="Username"
                   disabled={loading}
-                  onBlur={(e: React.FocusEvent<HTMLInputElement>) => {
+                  onBlur={(e) => {
                     const { value } = e.target;
                     console.log('Slugname username', value);
                   }}
                 />
-              </Form.Item>
-            </Col>
-            <Col xs={24} sm={24} md={24} lg={12}>
-              <Form.Item
-                name="nome"
-                label="Nome"
-                required 
-                tooltip={{
-                  title: 'Informe o nome para o usuário',
-                  icon: <InfoCircleOutlined />
-                }}
-                hasFeedback
-                validateStatus="warning"
-              >
-                <Input placeholder="Nome" disabled={loading}/>
               </Form.Item>
             </Col>
           </Row>
