@@ -1,13 +1,10 @@
 import { rest } from 'msw';
 import { env } from '@infra/env';
-import { ReturnApiDataTableHelper } from '@infra/mock/helper/return-api-data-table.helper';
 import { ReturnApiDataHelper } from '@infra/mock/helper/return-api-data.helper';
 import { AnyObject } from '@infra/types';
 import * as jose from 'jose';
 import {v4 as uuidv4} from 'uuid';
 
-import { db } from '@infra/firebase';
-import { onValue, ref, set, child, get } from "firebase/database";
 
 const secret = new TextEncoder().encode(
   env.MSW.JWT_SECRET,
@@ -26,13 +23,16 @@ export const mockLoginEndpointAuthHandler = [
         //setNotBefore
         //setSubject
       const token = await new jose.SignJWT({
+        servidor: payload.servidor,
         nome: payload.nome,
+        username: payload.username,
         id: myuuid
       })
       .setProtectedHeader({ alg: 'HS256' })
       .setIssuedAt()
       .setIssuer(env.API_URL as string)
       .setAudience('PocFirebaseReactApi')
+      .setAudience(payload.servidor)
       .setExpirationTime('2h')
       .setSubject(myuuid)
       .sign(secret);
@@ -44,7 +44,14 @@ export const mockLoginEndpointAuthHandler = [
         ctx.status(200),
         ctx.json(
           ReturnApiDataHelper.response({
-            accessToken: token
+            id_token: '',
+            access_token: token,
+            refresh_token: '',
+            redirect_uri: '',
+            token_type: 'Bearer',
+            expires_in: '',
+            access_token_expiration: '',
+            refresh_token_expiration: '',
           })
         )
       );
