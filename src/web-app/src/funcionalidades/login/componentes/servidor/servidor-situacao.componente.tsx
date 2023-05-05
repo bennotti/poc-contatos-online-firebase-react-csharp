@@ -1,5 +1,5 @@
 import { Col, Form, FormInstance, Input, Row } from 'antd';
-import { FC, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { InfoCircleOutlined } from '@ant-design/icons';
 import { LoginApiService } from '@infra/external-services/login-api.service';
 import { AnyObject, ValidateStatus } from '@infra/types';
@@ -19,13 +19,32 @@ export const ServidorSituacaoComponente: FC<ServidorSituacaoComponenteProps> = (
 }) => {
     const [situacaoServidor, setSituacaoServidor] = useState<'Novo servidor' | 'Servidor já existe' | ''>('');
     const [statusValidacao, setStatusValidacao] = useState<ValidateStatus>('');
+    const [servidorNome, setServidorNome] = useState<string>('');
 
-    const onBlurEvent = async (e: React.FocusEvent<HTMLInputElement>) => {
-        const { value } = e.target;
+    useEffect(() => {
+        if (servidorNome !== undefined && servidorNome.length === 0) {
+            const timeOut = setTimeout(() => {
+                setValorVazio();
+            }, 1500);
+            return () => clearTimeout(timeOut);
+        }
+    
+        if (servidorNome && servidorNome.length >= 3) {
+            const timeOut = setTimeout(() => {
+                setValor(servidorNome);
+            }, 1500);
+            return () => clearTimeout(timeOut);
+        }
+    }, [servidorNome]);
 
+    const setValorVazio = () => {
+        onSlugnameChange?.('');
+        setStatusValidacao('');
+    };
+
+    const setValor = async (value: string) => {
         if (!value || value?.trim() === '') {
-            onSlugnameChange?.('');
-            setStatusValidacao('');
+            setValorVazio();
             return;
         }
 
@@ -40,6 +59,18 @@ export const ServidorSituacaoComponente: FC<ServidorSituacaoComponenteProps> = (
         }
         onSlugnameChange?.('');
         setStatusValidacao('warning');
+    };
+
+    const onBlurEvent = async (e: React.FocusEvent<HTMLInputElement>) => {
+        const { value } = e.target;
+
+        setValor(value);
+    };
+
+    const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { value } = e.target;
+
+        setServidorNome(value);
     };
 
     return (
@@ -60,6 +91,7 @@ export const ServidorSituacaoComponente: FC<ServidorSituacaoComponenteProps> = (
                         placeholder="Servidor"
                         disabled={loading}
                         onBlur={onBlurEvent}
+                        onChange={onChange}
                     />
                 </Form.Item>
             </Col>

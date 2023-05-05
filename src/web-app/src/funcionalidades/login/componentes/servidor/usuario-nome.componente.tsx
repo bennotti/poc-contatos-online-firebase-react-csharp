@@ -1,5 +1,5 @@
 import { Col, Form, FormInstance, Input, Row } from 'antd';
-import { FC, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { InfoCircleOutlined } from '@ant-design/icons';
 import { LoginApiService } from '@infra/external-services/login-api.service';
 import { AnyObject, ValidateStatus } from '@infra/types';
@@ -7,7 +7,8 @@ import { AnyObject, ValidateStatus } from '@infra/types';
 export interface UsuarioNomeComponenteProps {
     loading?: boolean,
     form?: FormInstance<AnyObject>,
-    servidorSlugname?: string
+    servidorSlugname?: string,
+    onChange?: () => void,
 };
 
 const _loginApiService = new LoginApiService;
@@ -15,33 +16,74 @@ const _loginApiService = new LoginApiService;
 export const UsuarioNomeComponente: FC<UsuarioNomeComponenteProps> = ({
     servidorSlugname,
     loading = false,
-    form
+    form,
+    onChange
 }) => {
     const [nomeApenasLeitura, setNomeApenasLeitura] = useState<boolean>(true);
     const [statusValidacao, setStatusValidacao] = useState<ValidateStatus>('');
+    const [servidorNome, setServidorNome] = useState<string>('');
 
-    const onBlurEvent = async (e: React.FocusEvent<HTMLInputElement>) => {
-        const { value } = e.target;
+    useEffect(() => {
+        carregarDados().catch(console.error);
+    }, []);
 
+    useEffect(() => {
+        if (servidorNome !== undefined && servidorNome.length === 0) {
+            const timeOut = setTimeout(() => {
+                setValorVazio();
+            }, 1500);
+            return () => clearTimeout(timeOut);
+        }
+    
+        if (servidorNome && servidorNome.length >= 3) {
+            const timeOut = setTimeout(() => {
+                setValor(servidorNome);
+            }, 1500);
+            return () => clearTimeout(timeOut);
+        }
+    }, [servidorNome]);
+
+    const carregarDados = async () => {
+        const values = await form?.validateFields();
+        setValor(values?.username);
+    };
+
+    const setValorVazio = () => {
+        onChange?.();
+        setStatusValidacao('');
+    };
+
+    const setValor = async (value: string) => {
         if (!value || value?.trim() === '' || !servidorSlugname || servidorSlugname?.trim() === '') {
-            setStatusValidacao('');
+            setValorVazio();
             return;
         }
+
         setStatusValidacao('validating');
-        
-        const servidorResponse = await _loginApiService.validarUsername({
-            servidor: servidorSlugname,
-            username: value
-        });
-        console.log(servidorResponse);
+        const servidorResponse = await _loginApiService.validarServidor(value);
+
         if (servidorResponse?.result) {
             form && form.setFieldValue('username', servidorResponse?.data?.slugname);
             form && form.setFieldValue('nome', servidorResponse?.data?.nome);
             setNomeApenasLeitura(servidorResponse?.data?.existe)
             setStatusValidacao('success');
+            onChange?.();
             return;
         }
         setStatusValidacao('warning');
+        onChange?.();
+    };
+
+    const onBlurEvent = async (e: React.FocusEvent<HTMLInputElement>) => {
+        const { value } = e.target;
+
+        setValor(value);
+    };
+
+    const onUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { value } = e.target;
+
+        setServidorNome(value);
     };
 
     return (
@@ -62,6 +104,7 @@ export const UsuarioNomeComponente: FC<UsuarioNomeComponenteProps> = ({
                         placeholder="Username"
                         disabled={loading || !servidorSlugname || servidorSlugname?.trim() === ''}
                         onBlur={onBlurEvent}
+                        onChange={onUsernameChange}
                     />
                 </Form.Item>
             </Col>

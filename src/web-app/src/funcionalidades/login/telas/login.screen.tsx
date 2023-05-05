@@ -13,6 +13,7 @@ const { Title } = Typography;
 const _loginApiService = new LoginApiService;
 
 export const LoginScreen: FC = () => {
+  const [formValidado, setFormValidado] = useState<boolean>(false);
   const [servidorSlugname, setServidorSlugname] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
   const [form] = Form.useForm();
@@ -29,9 +30,34 @@ export const LoginScreen: FC = () => {
     navigate('/');
   };
 
-  const onSlugnameChange = (slugname: string) => {
+  const onSlugnameChange = async (slugname: string) => {
     setServidorSlugname(slugname);
-  }
+
+    validaForm(await form.validateFields());
+  };
+
+  const notNullOrEmpty = (value: string): boolean => {
+    return !!value && value !== '';
+  };
+
+  const validaForm = (values: AnyObject): boolean => {
+    const valido = values
+      && notNullOrEmpty(values.nome)
+      && notNullOrEmpty(values.username)
+      && notNullOrEmpty(values.servidor);
+
+    setFormValidado(valido);
+
+    return valido;
+  };
+
+  const onFormValuesChange = (_changedValues: AnyObject, values: AnyObject) => {
+    validaForm(values);
+  };
+
+  const onUsuarioNomeChange = async () => {
+    validaForm(await form.validateFields());
+  };
 
   return (
     <FullScreenLayout className='site-layout-background'>
@@ -48,13 +74,17 @@ export const LoginScreen: FC = () => {
           initialValues={{ }}
           onFinish={onFinish}
           requiredMark={false}
-          onValuesChange={(_, values: AnyObject) => {
-            // console.log(values);
-            // setBotaoSalvarDesabilitado(dados.validarAlteracoes(values));
-          }}
+          onValuesChange={onFormValuesChange}
         >
-          <ServidorSituacaoComponente form={form} onSlugnameChange={onSlugnameChange}/>
-          <UsuarioNomeComponente servidorSlugname={servidorSlugname} form={form}/>
+          <ServidorSituacaoComponente
+            form={form}
+            onSlugnameChange={onSlugnameChange}
+          />
+          <UsuarioNomeComponente
+            servidorSlugname={servidorSlugname}
+            form={form}
+            onChange={onUsuarioNomeChange}
+          />
           <Row gutter={8} justify='center' align='top'>
             <Col xs={24} sm={24} md={24} lg={24}>
               <Form.Item>
@@ -63,7 +93,7 @@ export const LoginScreen: FC = () => {
                     type="primary"
                     htmlType="submit"
                     loading={loading}
-                    disabled={true}
+                    disabled={!formValidado}
                     block
                   >
                     Entrar
