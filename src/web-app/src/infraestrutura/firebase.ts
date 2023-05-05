@@ -1,4 +1,5 @@
 import { initializeApp } from "firebase/app";
+import { UserCredential, getAuth, signInAnonymously } from "firebase/auth";
 import "firebase/database";
 import { getDatabase } from "firebase/database";
 import { env } from "./env";
@@ -16,3 +17,20 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 export const db = getDatabase(app);
+export const getAuthAnonimo = async (): Promise<UserCredential> => {
+  const auth = getAuth();
+  const response = await signInAnonymously(auth);
+
+  if (response) {
+    // User is signed in, see docs for a list of available properties
+    // https://firebase.google.com/docs/reference/js/firebase.User
+    const uid = response.user.uid;
+    console.log(uid);
+    // ...
+  } else {
+    // User is signed out
+    // ...
+  }
+
+  return response;
+}

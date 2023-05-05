@@ -25,7 +25,7 @@ export const ServidorSituacaoComponente: FC<ServidorSituacaoComponenteProps> = (
 
         setStatusValidacao('validating');
         const servidorResponse = await _loginApiService.validarServidor(value);
-
+        console.log(servidorResponse);
         console.log('Slugname servidor', value);
         setStatusValidacao('success');
     };
