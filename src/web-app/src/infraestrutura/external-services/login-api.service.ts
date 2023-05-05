@@ -6,12 +6,10 @@ import { ILoginApiService } from "./interface/login-api.interface";
 import { IReturnApiDataDto } from "@infra/dtos/return-api-data.dto";
 
 export class LoginApiService extends AbstractApiService implements ILoginApiService {
-  validarUsername = async (nome: string): Promise<IReturnApiDataDto<AnyObject> | null>  => {
+  validarUsername = async (payload: AnyObject): Promise<IReturnApiDataDto<AnyObject> | null>  => {
     const responseApi = await this.httpClientApi.post<
       IReturnApiDataDto<AnyObject>
-    >(`api/valida/username`, {
-      nome,
-    });
+    >(`api/valida/username`, payload);
 
     if (!responseApi.data.result) {
       throw new Error(responseApi.data.message);

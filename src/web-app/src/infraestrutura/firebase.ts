@@ -1,7 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { UserCredential, getAuth, signInAnonymously } from "firebase/auth";
 import "firebase/database";
-import { getDatabase } from "firebase/database";
+import { child, get, getDatabase, ref } from "firebase/database";
 import { env } from "./env";
 
 const firebaseConfig = {
@@ -33,4 +33,23 @@ export const getAuthAnonimo = async (): Promise<UserCredential> => {
   }
 
   return response;
+}
+
+export class FirebaseDatabase {
+  private static instance: FirebaseDatabase;
+  public static getInstance(): FirebaseDatabase {
+    if (!FirebaseDatabase.instance) {
+      FirebaseDatabase.instance = new FirebaseDatabase();
+    }
+
+    return FirebaseDatabase.instance;
+  }
+  private constructor() {
+    getAuthAnonimo().catch(console.error);
+  }
+
+  obter = async (path: string) => {
+    const dbRef = ref(db);
+    return get(child(dbRef, path))
+  } 
 }

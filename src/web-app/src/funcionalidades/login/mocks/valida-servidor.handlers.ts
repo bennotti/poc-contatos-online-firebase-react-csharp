@@ -16,21 +16,19 @@ export const mockLoginEndpointValidaServidorHandler = [
       
       const payload = await req.json<AnyObject>();
 
-      const slugname = payload?.nome ? slug(payload?.nome) : '';
+      const slugname = (payload?.nome ? slug(payload?.nome) : '').toLowerCase();
       //slug.charmap['♥'] = 'freaking love'
       await getAuthAnonimo();
       // verificar se existe no firebase
       const dbRef = ref(db);
-      get(child(dbRef, `${slugname}`)).then((snapshot) => {
-        if (snapshot.exists()) {
-          console.log(snapshot.val());
-        } else {
-          console.log("No data available");
-        }
-      }).catch((error) => {
-        console.error(error);
-      });
-      
+
+      const snapshot = await get(child(dbRef, `${slugname}`));
+
+      // if (snapshot.exists()) {
+      //   console.log(snapshot.val());
+      // } else {
+      //   console.log("No data available");
+      // }
 
       return res(
         ctx.delay(1000),
@@ -38,7 +36,8 @@ export const mockLoginEndpointValidaServidorHandler = [
         ctx.json(
           ReturnApiDataHelper.response({
             nome: payload?.nome ?? '',
-            slugname: slugname
+            slugname: slugname,
+            existe: snapshot.exists()
           })
         )
       );

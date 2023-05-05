@@ -1,33 +1,45 @@
-import { Col, Form, Input, Row } from 'antd';
+import { Col, Form, FormInstance, Input, Row } from 'antd';
 import { FC, useState } from 'react';
 import { InfoCircleOutlined } from '@ant-design/icons';
 import { LoginApiService } from '@infra/external-services/login-api.service';
-import { ValidateStatus } from '@infra/types';
+import { AnyObject, ValidateStatus } from '@infra/types';
 
 export interface ServidorSituacaoComponenteProps {
-    loading?: boolean
+    loading?: boolean,
+    form?: FormInstance<AnyObject>,
+    onSlugnameChange?: (slugname: string) => void
 };
 
 const _loginApiService = new LoginApiService;
 
 export const ServidorSituacaoComponente: FC<ServidorSituacaoComponenteProps> = ({
-    loading = false
+    loading = false,
+    form,
+    onSlugnameChange
 }) => {
+    const [situacaoServidor, setSituacaoServidor] = useState<'Novo servidor' | 'Servidor já existe' | ''>('');
     const [statusValidacao, setStatusValidacao] = useState<ValidateStatus>('');
 
     const onBlurEvent = async (e: React.FocusEvent<HTMLInputElement>) => {
         const { value } = e.target;
 
         if (!value || value?.trim() === '') {
+            onSlugnameChange?.('');
             setStatusValidacao('');
             return;
         }
 
         setStatusValidacao('validating');
         const servidorResponse = await _loginApiService.validarServidor(value);
-        console.log(servidorResponse);
-        console.log('Slugname servidor', value);
-        setStatusValidacao('success');
+
+        if (servidorResponse?.result) {
+            onSlugnameChange?.(servidorResponse?.data?.slugname ?? '');
+            setStatusValidacao('success');
+            setSituacaoServidor(servidorResponse?.data?.existe ? 'Servidor já existe' : 'Novo servidor');
+            return;
+        }
+        onSlugnameChange?.('');
+        setStatusValidacao('warning');
     };
 
     return (
@@ -62,6 +74,7 @@ export const ServidorSituacaoComponente: FC<ServidorSituacaoComponenteProps> = (
                         readOnly
                         placeholder="Situação"
                         disabled={!statusValidacao || loading}
+                        value={situacaoServidor}
                     />
                 </Form.Item>
             </Col>

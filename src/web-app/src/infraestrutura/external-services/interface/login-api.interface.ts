@@ -5,7 +5,7 @@ import { AnyObject } from "@infra/types";
 import { IReturnApiDataDto } from "@infra/dtos/return-api-data.dto";
 
 export interface ILoginApiService extends IApiService {
-    validarUsername: (nome: string) => Promise<
+    validarUsername: (payload: AnyObject) => Promise<
         IReturnApiDataDto<AnyObject>
         | null
     >;

@@ -13,6 +13,7 @@ const { Title } = Typography;
 const _loginApiService = new LoginApiService;
 
 export const LoginScreen: FC = () => {
+  const [servidorSlugname, setServidorSlugname] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
   const [form] = Form.useForm();
   const navigate = useNavigate();
@@ -27,6 +28,10 @@ export const LoginScreen: FC = () => {
     console.log(response);
     navigate('/');
   };
+
+  const onSlugnameChange = (slugname: string) => {
+    setServidorSlugname(slugname);
+  }
 
   return (
     <FullScreenLayout className='site-layout-background'>
@@ -48,8 +53,8 @@ export const LoginScreen: FC = () => {
             // setBotaoSalvarDesabilitado(dados.validarAlteracoes(values));
           }}
         >
-          <ServidorSituacaoComponente />
-          <UsuarioNomeComponente  />
+          <ServidorSituacaoComponente form={form} onSlugnameChange={onSlugnameChange}/>
+          <UsuarioNomeComponente servidorSlugname={servidorSlugname} form={form}/>
           <Row gutter={8} justify='center' align='top'>
             <Col xs={24} sm={24} md={24} lg={24}>
               <Form.Item>
