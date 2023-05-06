@@ -64,7 +64,8 @@ export const mockLoginEndpointAuthHandler = [
           {
             online: true,
             nome: payload?.nome,
-            id: myuuid
+            id: myuuid,
+            lastPing: new Date
           }
         );
       } else {
@@ -72,6 +73,7 @@ export const mockLoginEndpointAuthHandler = [
           `${servidorSlugname}/${usernameSlugname}`,
           {
             online: true,
+            lastPing: new Date
           }
         );
       }

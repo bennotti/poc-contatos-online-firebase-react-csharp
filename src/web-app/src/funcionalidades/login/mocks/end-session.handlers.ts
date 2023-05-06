@@ -1,6 +1,5 @@
 import { rest } from 'msw';
 import { env } from '@infra/env';
-import { ReturnApiDataTableHelper } from '@infra/mock/helper/return-api-data-table.helper';
 import { ReturnApiDataHelper } from '@infra/mock/helper/return-api-data.helper';
 import { AnyObject } from '@infra/types';
 import * as jose from 'jose';
@@ -11,9 +10,9 @@ const secret = new TextEncoder().encode(
   env.MSW.JWT_SECRET,
 );
 
-export const mockLoginEndpointUserInfoHandler = [
-  rest.get(
-    `${env.API_URL}api/user/info`,
+export const mockLoginEndpointEndSessionHandler = [
+  rest.post(
+    `${env.API_URL}api/auth/end-session`,
     async (req, res, ctx) => {
       let authorization: string = req.headers.get('authorization') ?? '';
 
@@ -53,7 +52,7 @@ export const mockLoginEndpointUserInfoHandler = [
         usernameSnapshot = await firebase.criar(
           `${payload?.servidor}/${payload?.username}`,
           {
-            online: true,
+            online: false,
             nome: payload?.nome,
             id: myuuid,
             lastPing: new Date
@@ -63,7 +62,7 @@ export const mockLoginEndpointUserInfoHandler = [
         usernameSnapshot = await firebase.atualizar(
           `${payload?.servidor}/${payload?.username}`,
           {
-            online: true,
+            online: false,
             lastPing: new Date
           }
         );

@@ -8,6 +8,7 @@ import { onValue, ref } from "firebase/database";
 import { AnyObject } from '@infra/types';
 import { UserApiService } from '@infra/external-services/user-api.service';
 import { TitleLoading } from '@componentes/title-loading.componente';
+import { LoginApiService } from '@infra/external-services/login-api.service';
 
 const { Title } = Typography;
 
@@ -51,6 +52,7 @@ const data = [
 
 
 const _userApiService = new UserApiService;
+const _loginApiService = new LoginApiService;
 
 export const InicioScreen: FC = () => {
   const navigate = useNavigate();
@@ -88,6 +90,7 @@ export const InicioScreen: FC = () => {
   }, []);
 
   const sairOnClick = async () => {
+    await _loginApiService.endSession();
     localStorage.removeItem('access_token');
     navigate('/login');
   };
@@ -103,7 +106,7 @@ export const InicioScreen: FC = () => {
         </Col>
       </Row>
       <Row gutter={8} justify='center' align='top'>
-        <Col xs={8} sm={8} md={8} lg={8} className='site-layout-background' style={{ paddingBottom: 20, height: 450, borderRight: '1px solid', overflowX: 'hidden', overflowY: 'auto' }}>
+        <Col xs={12} sm={12} md={12} lg={12} className='site-layout-background' style={{ paddingBottom: 20, height: 450, borderRight: '1px solid', overflowX: 'hidden', overflowY: 'auto' }}>
           <List
             itemLayout="horizontal"
             dataSource={data2}
@@ -118,14 +121,16 @@ export const InicioScreen: FC = () => {
             )}
           />
         </Col>
-        <Col xs={16} sm={16} md={16} lg={16} className='site-layout-background' style={{ paddingBottom: 20, height: 450, overflowY: 'auto', overflowX: 'hidden' }}>
-          <List
+        <Col xs={12} sm={12} md={12} lg={12} className='site-layout-background' style={{ paddingBottom: 20, height: 450, overflowY: 'auto', overflowX: 'hidden' }}>
+        <List
             itemLayout="horizontal"
-            dataSource={data}
+            dataSource={data2}
             renderItem={(item, index) => (
               <List.Item>
                 <List.Item.Meta
-                  description="Ant Design, a design language for background applications, is refined by Ant UED Team"
+                  avatar={<Avatar src={`https://xsgames.co/randomusers/avatar.php?g=pixel&key=${index}`} />}
+                  title={<a href="https://ant.design">{item.title}</a>}
+                  description="Ant Design, a design language..."
                 />
               </List.Item>
             )}

@@ -3,6 +3,7 @@ import { IApiService } from "./api.interface";
 import { IReturnApiDataTableDto } from "@infra/dtos/return-api-data-table.dto";
 import { AnyObject } from "@infra/types";
 import { IReturnApiDataDto } from "@infra/dtos/return-api-data.dto";
+import { IReturnApiDto } from "@infra/dtos/return-api.dto";
 
 export interface ILoginApiService extends IApiService {
     validarUsername: (payload: AnyObject) => Promise<
@@ -17,4 +18,5 @@ export interface ILoginApiService extends IApiService {
         | IReturnApiDataDto<AnyObject>
         | null
     >;
+    endSession: () => Promise<IReturnApiDto | null>;
 }
