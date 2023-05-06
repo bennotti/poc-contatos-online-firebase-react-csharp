@@ -6,10 +6,12 @@ import { mockLoginEndpointValidaUsernameHandler } from './login/mocks/valida-use
 import { mockLoginEndpointEndSessionHandler } from './login/mocks/end-session.handlers';
 import { mockContatoEndpointListaHandler } from './inicio/mocks/contatos.handlers';
 import { mockContatoEndpointListaDisponivelHandler } from './inicio/mocks/contatos-disponiveis.handlers';
+import { mockContatoEndpointFavoritosToggleHandler } from './inicio/mocks/contato-toggle-favoritos.handlers';
 
 export const mswHandlers: RequestHandler[] = [
     ...mockContatoEndpointListaHandler,
     ...mockContatoEndpointListaDisponivelHandler,
+    ...mockContatoEndpointFavoritosToggleHandler,
 
     ...mockLoginEndpointValidaServidorHandler,
     ...mockLoginEndpointValidaUsernameHandler,

@@ -8,85 +8,83 @@ import { UserApiService } from '@infra/external-services/user-api.service';
 import { TitleLoading } from '@componentes/title-loading.componente';
 import { LoginApiService } from '@infra/external-services/login-api.service';
 import { ContatoApiService } from '@infra/external-services/contato-api.service';
+import { AvatarStatusContatoComponente } from './avatar-status-contato.componente';
+import { StarFilled } from '@ant-design/icons';
+import { onChildChanged, ref } from 'firebase/database';
+import { db } from '@infra/firebase';
 
 const { Title } = Typography;
-
-const data2 = [
-  {
-    title: 'Ant Design Title 1',
-  },
-  {
-    title: 'Ant Design Title 2',
-  },
-  {
-    title: 'Ant Design Title 3',
-  },
-  {
-    title: 'Ant Design Title 4',
-  },
-  {
-    title: 'Ant Design Title 4',
-  },
-  {
-    title: 'Ant Design Title 4',
-  },
-  {
-    title: 'Ant Design Title 4',
-  },
-];
-const data = [
-  {
-    title: 'Ant Design Title 1',
-  },
-  {
-    title: 'Ant Design Title 2',
-  },
-  {
-    title: 'Ant Design Title 3',
-  },
-  {
-    title: 'Ant Design Title 4',
-  },
-];
-
 
 const _userApiService = new UserApiService;
 const _loginApiService = new LoginApiService;
 const _contatoApiService = new ContatoApiService;
 
-export const ContatosComponente: FC = () => {
+interface ContatosComponenteProps{
+  user?: AnyObject | null;
+}
+
+export const ContatosComponente: FC<ContatosComponenteProps> = ({
+  user,
+}) => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState<boolean>(false);
   const [contatos, setContatos] = useState<Array<AnyObject>>([]);
 
   const obterListaContatos = async () => {
     setLoading(true);
-    const response = await _contatoApiService.listar();
+    if (!user) {
+      return;
+    }
+    const response = await _contatoApiService.favoritos();
 
     setContatos(response?.records ?? []);
 
-    console.log(response);
+    // console.log(response);
     
     setLoading(false);
   };
+
+  if (user) {
+    //validar remoção
+    onChildChanged(ref(db, `${user.servidor}`), (data) => {
+      obterListaContatos().catch(console.error);
+    });
+  }
 
   useEffect(() => {
     obterListaContatos().catch(console.error);
   }, []);
 
+  useEffect(() => {
+    obterListaContatos().catch(console.error);
+  }, [user]);
+
+  const favoritarDesfavoritar = async (item: AnyObject) => {
+    await _contatoApiService.favoritarDesfavoritar(item);
+  };
+
   return (
     <>
-      <Title style={{ textAlign: 'center' }}>Contatos</Title>
+      <Title style={{ textAlign: 'center' }}>Favoritos</Title>
       <List
         loading={loading}
         itemLayout="horizontal"
         dataSource={contatos}
         renderItem={(item, index) => (
-          <List.Item>
+          <List.Item
+            actions={[
+              <Button
+                key="removerFavoritos"
+                onClick={async () => favoritarDesfavoritar(item)}
+              >
+                <StarFilled />
+              </Button>
+            ]}
+          >
             <List.Item.Meta
-              avatar={<Avatar src={`https://xsgames.co/randomusers/avatar.php?g=pixel&key=${index}`} />}
-              title={<a href="https://ant.design">{item.title}</a>}
-              description="Ant Design, a design language..."
+              avatar={<AvatarStatusContatoComponente item={item} />}
+              title={item.nome}
+              description={item.username}
             />
           </List.Item>
         )}

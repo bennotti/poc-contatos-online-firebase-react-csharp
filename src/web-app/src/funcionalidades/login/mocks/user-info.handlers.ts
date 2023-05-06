@@ -53,6 +53,7 @@ export const mockLoginEndpointUserInfoHandler = [
         usernameSnapshot = await firebase.criar(
           `${payload?.servidor}/${payload?.username}`,
           {
+            username: payload?.username,
             online: true,
             nome: payload?.nome,
             id: myuuid,

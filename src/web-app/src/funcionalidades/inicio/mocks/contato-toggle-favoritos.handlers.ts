@@ -1,19 +1,20 @@
 import { rest } from 'msw';
 import { env } from '@infra/env';
-import { ReturnApiDataHelper } from '@infra/mock/helper/return-api-data.helper';
+import { ReturnApiDataTableHelper } from '@infra/mock/helper/return-api-data-table.helper';
 import { AnyObject } from '@infra/types';
 import * as jose from 'jose';
 import { FirebaseDatabase } from '@infra/firebase';
-import {v4 as uuidv4} from 'uuid';
+import { ReturnApiHelper } from '@infra/mock/helper/return-api.helper';
 
 const secret = new TextEncoder().encode(
   env.MSW.JWT_SECRET,
 );
 
-export const mockLoginEndpointEndSessionHandler = [
+export const mockContatoEndpointFavoritosToggleHandler = [
   rest.post(
-    `${env.API_URL}api/auth/end-session`,
+    `${env.API_URL}api/contato/favoritos/toggle`,
     async (req, res, ctx) => {
+
       let authorization: string = req.headers.get('authorization') ?? '';
 
       authorization = authorization.replace('Bearer ', '');
@@ -37,35 +38,25 @@ export const mockLoginEndpointEndSessionHandler = [
           ctx.delay(1000),
           ctx.status(401),
           ctx.json(
-            ReturnApiDataHelper.response({})
+            ReturnApiDataTableHelper.response([])
           )
         );
       }
+      const payloadBody = await req.json<AnyObject>();
 
       // obter info usuario
       const firebase = FirebaseDatabase.getInstance();
 
-      let usernameSnapshot = await firebase.obter(`${payload?.servidor}/${payload?.username}`);
+      let responseSnapshot = await firebase.obter(`${payload?.servidor}/${payload?.username}/favoritos/${payloadBody?.username}`);
 
-      if (!usernameSnapshot.exists()) {
-        const myuuid = uuidv4();
-        usernameSnapshot = await firebase.criar(
-          `${payload?.servidor}/${payload?.username}`,
-          {
-            username: payload?.username,
-            online: false,
-            nome: payload?.nome,
-            id: myuuid,
-            lastPing: new Date
-          }
+      if (responseSnapshot.exists()) {
+        await firebase.remover(
+          `${payload?.servidor}/${payload?.username}/favoritos/${payloadBody?.username}`
         );
       } else {
-        usernameSnapshot = await firebase.atualizar(
-          `${payload?.servidor}/${payload?.username}`,
-          {
-            online: false,
-            lastPing: new Date
-          }
+        await firebase.criar(
+          `${payload?.servidor}/${payload?.username}/favoritos/${payloadBody?.username}`,
+          true
         );
       }
 
@@ -73,10 +64,7 @@ export const mockLoginEndpointEndSessionHandler = [
         ctx.delay(1000),
         ctx.status(200),
         ctx.json(
-          ReturnApiDataHelper.response({
-            ...payload,
-            snapshot: usernameSnapshot.val()
-          })
+          ReturnApiHelper.response()
         )
       );
     }

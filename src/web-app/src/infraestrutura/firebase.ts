@@ -1,7 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { UserCredential, getAuth, signInAnonymously } from "firebase/auth";
 import "firebase/database";
-import { DataSnapshot, child, get, getDatabase, ref, set, update } from "firebase/database";
+import { DataSnapshot, child, get, getDatabase, query, ref, remove, set, update } from "firebase/database";
 import { env } from "./env";
 import { AnyObject } from "./types";
 
@@ -54,9 +54,13 @@ export class FirebaseDatabase {
     return get(child(dbRef, path))
   } 
 
-  criar = async (path: string, payload: AnyObject): Promise<DataSnapshot> => {
+  criar = async (path: string, payload: AnyObject | unknown): Promise<DataSnapshot> => {
     await set(ref(db, path), payload);
     return this.obter(path);
+  }
+
+  remover = async (path: string) => {
+    await remove(ref(db, path));
   }
 
   atualizar = async (path: string, payload: AnyObject): Promise<DataSnapshot> => {
