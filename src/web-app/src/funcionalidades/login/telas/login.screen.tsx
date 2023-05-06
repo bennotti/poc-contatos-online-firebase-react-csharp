@@ -5,8 +5,8 @@ import { FullScreenLayout } from '@layouts/full-screen.layout';
 import { AnyObject } from '@infra/types';
 import { LoginApiService } from '@infra/external-services/login-api.service';
 import { InfoCircleOutlined } from '@ant-design/icons';
-import { ServidorSituacaoComponente } from '../componentes/servidor/servidor-situacao.componente';
-import { UsuarioNomeComponente } from '../componentes/servidor/usuario-nome.componente';
+import { ServidorSituacaoComponente } from '../componentes/servidor-situacao.componente';
+import { UsuarioNomeComponente } from '../componentes/usuario-nome.componente';
 
 const { Title } = Typography;
 
@@ -76,11 +76,13 @@ export const LoginScreen: FC = () => {
         >
           <ServidorSituacaoComponente
             form={form}
+            checkOnBlur={false}
             onSlugnameChange={onSlugnameChange}
           />
           <UsuarioNomeComponente
             servidorSlugname={servidorSlugname}
             form={form}
+            checkOnBlur={false}
             onChange={onUsuarioNomeChange}
           />
           <Row gutter={8} justify='center' align='top'>

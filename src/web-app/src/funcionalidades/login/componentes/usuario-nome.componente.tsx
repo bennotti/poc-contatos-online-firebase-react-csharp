@@ -4,22 +4,30 @@ import { InfoCircleOutlined } from '@ant-design/icons';
 import { LoginApiService } from '@infra/external-services/login-api.service';
 import { AnyObject, ValidateStatus } from '@infra/types';
 
-export interface ServidorSituacaoComponenteProps {
+export interface UsuarioNomeComponenteProps {
     loading?: boolean,
+    checkOnBlur?: boolean,
     form?: FormInstance<AnyObject>,
-    onSlugnameChange?: (slugname: string) => void
+    servidorSlugname?: string,
+    onChange?: () => void,
 };
 
 const _loginApiService = new LoginApiService;
 
-export const ServidorSituacaoComponente: FC<ServidorSituacaoComponenteProps> = ({
+export const UsuarioNomeComponente: FC<UsuarioNomeComponenteProps> = ({
+    servidorSlugname,
     loading = false,
+    checkOnBlur = false,
     form,
-    onSlugnameChange
+    onChange
 }) => {
-    const [situacaoServidor, setSituacaoServidor] = useState<'Novo servidor' | 'Servidor já existe' | ''>('');
+    const [nomeApenasLeitura, setNomeApenasLeitura] = useState<boolean>(true);
     const [statusValidacao, setStatusValidacao] = useState<ValidateStatus>('');
     const [servidorNome, setServidorNome] = useState<string>('');
+
+    useEffect(() => {
+        carregarDados().catch(console.error);
+    }, []);
 
     useEffect(() => {
         if (servidorNome !== undefined && servidorNome.length === 0) {
@@ -37,13 +45,18 @@ export const ServidorSituacaoComponente: FC<ServidorSituacaoComponenteProps> = (
         }
     }, [servidorNome]);
 
+    const carregarDados = async () => {
+        const values = await form?.validateFields();
+        setValor(values?.username);
+    };
+
     const setValorVazio = () => {
-        onSlugnameChange?.('');
+        onChange?.();
         setStatusValidacao('');
     };
 
     const setValor = async (value: string) => {
-        if (!value || value?.trim() === '') {
+        if (!value || value?.trim() === '' || !servidorSlugname || servidorSlugname?.trim() === '') {
             setValorVazio();
             return;
         }
@@ -52,22 +65,25 @@ export const ServidorSituacaoComponente: FC<ServidorSituacaoComponenteProps> = (
         const servidorResponse = await _loginApiService.validarServidor(value);
 
         if (servidorResponse?.result) {
-            onSlugnameChange?.(servidorResponse?.data?.slugname ?? '');
+            form && form.setFieldValue('username', servidorResponse?.data?.slugname);
+            form && form.setFieldValue('nome', servidorResponse?.data?.nome);
+            setNomeApenasLeitura(servidorResponse?.data?.existe)
             setStatusValidacao('success');
-            setSituacaoServidor(servidorResponse?.data?.existe ? 'Servidor já existe' : 'Novo servidor');
+            onChange?.();
             return;
         }
-        onSlugnameChange?.('');
         setStatusValidacao('warning');
+        onChange?.();
     };
 
     const onBlurEvent = async (e: React.FocusEvent<HTMLInputElement>) => {
+        if (!checkOnBlur) return;
         const { value } = e.target;
 
         setValor(value);
     };
 
-    const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const onUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { value } = e.target;
 
         setServidorNome(value);
@@ -75,38 +91,42 @@ export const ServidorSituacaoComponente: FC<ServidorSituacaoComponenteProps> = (
 
     return (
         <Row gutter={8} justify='center' align='top'>
-            <Col xs={24} sm={12} md={12} lg={12}>
+            <Col xs={24} sm={24} md={24} lg={12}>
                 <Form.Item
-                    name="servidor"
-                    label="Servidor"
+                    name="username"
+                    label="Username"
                     required 
                     tooltip={{
-                        title: 'Informe o nome do servidor',
+                        title: 'Informe username do usuário',
                         icon: <InfoCircleOutlined />
                     }}
                     hasFeedback
                     validateStatus={statusValidacao}
                 >
                     <Input
-                        placeholder="Servidor"
-                        disabled={loading}
+                        placeholder="Username"
+                        disabled={loading || !servidorSlugname || servidorSlugname?.trim() === ''}
                         onBlur={onBlurEvent}
-                        onChange={onChange}
+                        onChange={onUsernameChange}
                     />
                 </Form.Item>
             </Col>
-            <Col xs={24} sm={12} md={12} lg={12}>
+            <Col xs={24} sm={24} md={24} lg={12}>
                 <Form.Item
-                    label="Situação"
+                    name="nome"
+                    label="Nome"
                     required 
+                    tooltip={{
+                        title: 'Informe o nome para o usuário',
+                        icon: <InfoCircleOutlined />
+                    }}
                     hasFeedback
                     validateStatus={statusValidacao}
                 >
                     <Input
-                        readOnly
-                        placeholder="Situação"
+                        readOnly={nomeApenasLeitura}
+                        placeholder="Nome"
                         disabled={!statusValidacao || loading}
-                        value={situacaoServidor}
                     />
                 </Form.Item>
             </Col>

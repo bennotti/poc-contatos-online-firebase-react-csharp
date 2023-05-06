@@ -5,10 +5,20 @@ import { AbstractApiService } from "./abstract-api.service";
 import { IContatoApiService } from "./interface/contato-api.interface";
 
 export class ContatoApiService extends AbstractApiService implements IContatoApiService {
+  listarDisponiveis = async (filter?: IFilterApiDto | undefined): Promise<IReturnApiDataTableDto<AnyObject> | null>  => {
+    const responseApi = await this.httpClientApi.get<
+      IReturnApiDataTableDto<AnyObject>
+    >(`api/contato/disponivel`);
+
+    if (!responseApi.data.result) {
+      throw new Error(responseApi.data.message);
+    }
+    return responseApi.data;
+  }
   listar = async (filter?: IFilterApiDto | undefined): Promise<IReturnApiDataTableDto<AnyObject> | null>  => {
     const responseApi = await this.httpClientApi.get<
       IReturnApiDataTableDto<AnyObject>
-    >(`api/cliente`);
+    >(`api/contato`);
 
     if (!responseApi.data.result) {
       throw new Error(responseApi.data.message);
