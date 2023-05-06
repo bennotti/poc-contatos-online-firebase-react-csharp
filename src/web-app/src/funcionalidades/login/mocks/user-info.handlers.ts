@@ -26,7 +26,8 @@ export const mockLoginEndpointUserInfoHandler = [
           {
             issuer: env.API_URL as string,
             audience: 'PocFirebaseReactApi',
-          });
+          }
+        );
         
         payload = responseVerify.payload;
       } catch (e) {

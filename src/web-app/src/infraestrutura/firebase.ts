@@ -1,8 +1,9 @@
 import { initializeApp } from "firebase/app";
 import { UserCredential, getAuth, signInAnonymously } from "firebase/auth";
 import "firebase/database";
-import { child, get, getDatabase, ref } from "firebase/database";
+import { DataSnapshot, child, get, getDatabase, ref, set, update } from "firebase/database";
 import { env } from "./env";
+import { AnyObject } from "./types";
 
 const firebaseConfig = {
   apiKey: env.FIREBASE.API_KEY,
@@ -48,8 +49,18 @@ export class FirebaseDatabase {
     getAuthAnonimo().catch(console.error);
   }
 
-  obter = async (path: string) => {
+  obter = async (path: string): Promise<DataSnapshot> => {
     const dbRef = ref(db);
     return get(child(dbRef, path))
   } 
+
+  criar = async (path: string, payload: AnyObject): Promise<DataSnapshot> => {
+    await set(ref(db, path), payload);
+    return this.obter(path);
+  }
+
+  atualizar = async (path: string, payload: AnyObject): Promise<DataSnapshot> => {
+    await update(ref(db, path), payload);
+    return this.obter(path);
+  }
 }

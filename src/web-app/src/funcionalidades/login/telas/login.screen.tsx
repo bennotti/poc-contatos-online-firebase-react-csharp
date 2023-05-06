@@ -21,12 +21,10 @@ export const LoginScreen: FC = () => {
 
   const onFinish = async (values: AnyObject) => {
     setLoading(true);
-    console.log(values);
     const response = await _loginApiService.autenticar(values);
 
-    localStorage.setItem('access_token', response?.data?.accessToken);
+    localStorage.setItem('access_token', response?.data?.access_token);
 
-    console.log(response);
     navigate('/');
   };
 
