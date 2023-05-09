@@ -69,15 +69,16 @@ export const mockLoginEndpointAuthHandler = [
             lastPing: new Date
           }
         );
-      } else {
-        usernameSnapshot = await firebase.atualizar(
-          `${servidorSlugname}/${usernameSlugname}`,
-          {
-            online: true,
-            lastPing: new Date
-          }
-        );
-      }
+      } 
+      // else {
+      //   usernameSnapshot = await firebase.atualizar(
+      //     `${servidorSlugname}/${usernameSlugname}`,
+      //     {
+      //       online: true,
+      //       lastPing: new Date
+      //     }
+      //   );
+      // }
 
       const token = await new jose.SignJWT({
         servidor: payload.servidor,

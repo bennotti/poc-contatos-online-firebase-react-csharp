@@ -30,8 +30,8 @@ export const ContatosGlobalComponente: FC<ContatosGlobalComponenteProps> = ({
   const [loading, setLoading] = useState<boolean>(false);
   const [contatos, setContatos] = useState<Array<AnyObject>>([]);
 
-  const obterContatosGlobal = async () => {
-    setLoading(true);
+  const obterContatosGlobal = async (showLoading: boolean = true) => {
+    if (showLoading) setLoading(true);
     if (!user) {
       return;
     }
@@ -40,19 +40,14 @@ export const ContatosGlobalComponente: FC<ContatosGlobalComponenteProps> = ({
 
     setContatos(response?.records ?? []);
 
-    setLoading(false);
+    if (showLoading) setLoading(false);
   };
 
   if (user) {
-    //validar remoção
-    onChildChanged(ref(db, `${user.servidor}`), (data) => {
-      obterContatosGlobal().catch(console.error);
+    onChildChanged(ref(db, `${user.servidor}`), () => {
+      obterContatosGlobal(false).catch(console.error);
     });
   }
-
-  useEffect(() => {
-    obterContatosGlobal().catch(console.error);
-  }, []);
 
   useEffect(() => {
     obterContatosGlobal().catch(console.error);

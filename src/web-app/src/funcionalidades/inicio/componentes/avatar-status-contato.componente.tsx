@@ -1,10 +1,8 @@
 import { Avatar } from 'antd';
-import { FC } from 'react';
+import { FC, useState } from 'react';
 
 import { AnyObject } from '@infra/types';
 import { UserOutlined } from '@ant-design/icons';
-
-
 
 interface AvatarStatusContatoComponente {
   item?: AnyObject;

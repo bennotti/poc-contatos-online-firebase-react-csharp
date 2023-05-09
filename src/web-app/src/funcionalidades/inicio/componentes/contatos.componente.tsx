@@ -30,30 +30,23 @@ export const ContatosComponente: FC<ContatosComponenteProps> = ({
   const [loading, setLoading] = useState<boolean>(false);
   const [contatos, setContatos] = useState<Array<AnyObject>>([]);
 
-  const obterListaContatos = async () => {
-    setLoading(true);
+  const obterListaContatos = async (showLoading: boolean = true) => {
+    if (showLoading) setLoading(true);
     if (!user) {
       return;
     }
     const response = await _contatoApiService.favoritos();
 
     setContatos(response?.records ?? []);
-
-    // console.log(response);
     
-    setLoading(false);
+    if (showLoading) setLoading(false);
   };
 
   if (user) {
-    //validar remoção
-    onChildChanged(ref(db, `${user.servidor}`), (data) => {
-      obterListaContatos().catch(console.error);
+    onChildChanged(ref(db, `${user.servidor}`), () => {
+      obterListaContatos(false).catch(console.error);
     });
   }
-
-  useEffect(() => {
-    obterListaContatos().catch(console.error);
-  }, []);
 
   useEffect(() => {
     obterListaContatos().catch(console.error);
